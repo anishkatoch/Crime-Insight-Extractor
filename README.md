@@ -98,6 +98,20 @@ A Streamlit application that transcribes police complaint audio files, classifie
 - Sending medical assistance  
 - Preserving digital evidence for cybercrime  
 
+---
+
+###Extracted Insights for Audio 1 : 112
+
+![image](https://github.com/user-attachments/assets/8295d38a-66c5-44b8-9b1d-d360c33b2aaf)
+
+![image](https://github.com/user-attachments/assets/5473e0ce-6e51-448c-b4ae-15a89f959908)
+
+![image](https://github.com/user-attachments/assets/82a3f825-d63f-4fd8-b1ac-3639e8697dee)
+
+
+
+---
+
 ## 📜 Dependencies
 - `streamlit`  
 - `whisper`  
