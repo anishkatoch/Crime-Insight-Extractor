@@ -50,3 +50,62 @@ A Streamlit application that transcribes police complaint audio files, classifie
 - Internet connection to download models the first time  
 
 ---
+
+## 🧠 How It Works
+
+### Model Loading
+- Cached functions load:  
+  - **Whisper** (`base` model) for transcription  
+  - **Zero-shot classifier** (`facebook/bart-large-mnli`)  
+  - **spaCy transformer** (`en_core_web_trf`)  
+
+### Audio Transcription
+- User uploads an audio file  
+- FFmpeg (via Whisper) decodes it  
+- Whisper transcribes speech to **text**  
+
+### Crime Classification
+- Zero-shot classification over a curated list of crime types  
+- Returns **top label + confidence**  
+- Displayed as both a table (optional) and used downstream  
+
+### Insight Extraction
+
+#### Address Extraction Pipeline
+1. **spaCy Transformer NER**: Extracts any entity with `ent.label_ == "ADDRESS"`.  
+2. **pyap**: Regex-based street address parser (US, CA, UK).  
+3. **usaddress**: Grammar-based tagger for U.S. addresses.  
+
+#### Date & Time Extraction
+- **Uses spaCy** to find `DATE`/`TIME` entities  
+- **Parses only explicit** day-month-year strings via  
+  `dateparser.parse(..., settings={'REQUIRE_PARTS':['day','month','year']})`  
+- Falls back to **Not found** if no explicit date combination  
+
+#### Urgency, Weapon & Injury Detection
+- **Keywords** map to urgency scores (`emergency`, `urgent`, etc.)  
+- **Weapon list** checks words like `gun`, `knife`  
+- **Injury keywords** (`injured`, `bleeding`, etc.)  
+
+#### Suspect & Witness Info
+- **Regex** for “suspect described as …”  
+- Checks for the word **witness**  
+
+### Actionable Steps Generation
+- Dispatching units to the extracted address  
+- Flagging high-priority responses  
+- Notifying armed response team  
+- Sending medical assistance  
+- Preserving digital evidence for cybercrime  
+
+## 📜 Dependencies
+- `streamlit`  
+- `whisper`  
+- `torch`  
+- `transformers`  
+- `spacy`  
+- `en_core_web_trf`  
+- `dateparser`  
+- `pyap`  
+- `usaddress`  
+
