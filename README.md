@@ -100,7 +100,7 @@ A Streamlit application that transcribes police complaint audio files, classifie
 
 ---
 
-###Extracted Insights for Audio 1 : 112
+### Extracted Insights for Audio 1 : 112
 
 ![image](https://github.com/user-attachments/assets/8295d38a-66c5-44b8-9b1d-d360c33b2aaf)
 
