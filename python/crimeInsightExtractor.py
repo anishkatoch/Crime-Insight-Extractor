@@ -11,6 +11,14 @@ import pandas as pd
 import pyap
 import usaddress
 
+urgency_clf = pipeline(
+    "zero-shot-classification",
+    model="facebook/bart-large-mnli",
+    hypothesis_template="This message is {}."
+)
+
+
+
 # —— CACHING MODEL LOADS ——
 @st.cache_resource
 def load_whisper_model():
@@ -72,6 +80,17 @@ def extract_best_address(text):
         pass
     return "Not found"
 
+def detect_urgency_dynamic(text):
+    # Candidate labels in order of priority
+    candidates = ["Critical", "High", "Normal"]
+
+    out = urgency_clf(
+        text,
+        candidate_labels=candidates,
+        multi_label=False
+    )
+    # out["labels"] is a list sorted by score descending
+    return out["labels"][0]
 
 def extract_insights(text):
     # Get address or generic location
@@ -95,9 +114,6 @@ def extract_insights(text):
     else:
         time_str = "Not found"
 
-    urgency_kw = {"emergency":3, "immediate":2, "urgent":2, "asap":2, "now":1}
-    score = sum(w for k,w in urgency_kw.items() if k in text.lower())
-    urgency = "Critical" if score>=3 else ("High" if score>0 else "Normal")
 
     weapon_kw = ["gun","knife","rifle","pistol","weapon","shoot","gunfire"]
     found_weapons = [kw for kw in weapon_kw if kw in text.lower()]
@@ -105,6 +121,9 @@ def extract_insights(text):
 
     injury_kw = ["injured","hurt","wounded","bleeding"]
     injury_reported = "Yes" if any(kw in text.lower() for kw in injury_kw) else "No"
+
+    urgency=detect_urgency_dynamic(text)
+
 
     return {
         "Location": location,
