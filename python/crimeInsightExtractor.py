@@ -11,12 +11,6 @@ import pandas as pd
 import pyap
 import usaddress
 
-urgency_clf = pipeline(
-    "zero-shot-classification",
-    model="facebook/bart-large-mnli",
-    hypothesis_template="This message is {}."
-)
-
 
 
 # —— CACHING MODEL LOADS ——
@@ -79,6 +73,14 @@ def extract_best_address(text):
     except usaddress.RepeatedLabelError:
         pass
     return "Not found"
+    
+urgency_clf = pipeline(
+    "zero-shot-classification",
+    model="facebook/bart-large-mnli",
+    hypothesis_template="This message is {}."
+)
+
+
 
 def detect_urgency_dynamic(text):
     # Candidate labels in order of priority
